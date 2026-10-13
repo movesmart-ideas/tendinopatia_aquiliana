@@ -205,6 +205,17 @@ body.problem-mode .report-content-wrap>.dash-card{margin:0 auto 22px!important;w
   .details{grid-template-columns:1fr 1fr}
 }
 
+
+.ms-symptom-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,4,6,.84);padding:18px;align-items:center;justify-content:center;overflow:auto}
+.ms-symptom-overlay.visible{display:flex}
+.ms-symptom-dialog{width:min(100%,530px);background:#20171b;border:1px solid #8b4e35;border-radius:20px;padding:clamp(22px,5vw,34px);box-shadow:0 20px 80px #000b;color:#fff}
+.ms-symptom-dialog h2{font-size:clamp(25px,5vw,32px);line-height:1.15;margin:13px 0}
+.ms-symptom-dialog p{color:#dfd2d7}
+.ms-symptom-option{display:flex;align-items:center;gap:12px;border:1px solid #554048;border-radius:12px;padding:16px 14px;margin:10px 0;cursor:pointer}
+.ms-symptom-option:has(input:checked){border-color:#ff7934;background:#43271d}
+.ms-symptom-option input{accent-color:#ff7934;width:19px;height:19px;flex-shrink:0}
+.ms-symptom-actions{display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px}
+@media(max-width:520px){.ms-symptom-actions>*{width:100%}}
 </style><style>
 #evaluacion{display:none;max-width:1030px;margin:auto;padding:48px 22px 90px}body.eval-mode main{display:none}body.eval-mode #evaluacion{display:block}.eval-grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px}.eval-side{background:#171217;border:1px solid #41313a;border-radius:18px;padding:26px;height:fit-content}.eval-side div{padding:13px 8px;color:#a9a0a7;border-bottom:1px solid #392c32}.eval-side .chosen{color:#ff732e;font-weight:800}.eval-card{border:1px solid #604032;background:linear-gradient(150deg,#22151a,#100d10);padding:34px;border-radius:23px;min-height:450px}.eval-heading{font-size:clamp(30px,4.7vw,44px);line-height:1.1;margin:10px 0}.eval-meter{height:7px;background:#34292e;border-radius:10px;overflow:hidden;margin:26px 0}.eval-meter span{display:block;height:100%;background:#ff732e;transition:width .2s}.eval-question{font-size:21px;font-weight:750;margin:26px 0 15px}.eval-options{display:grid;gap:12px}.eval-options label{display:flex;gap:12px;align-items:center;border:1px solid #504049;border-radius:11px;padding:14px 15px;cursor:pointer}.eval-options label:has(input:checked){border-color:#ff732e;background:#462719}.eval-options input{accent-color:#ff732e}.eval-actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.eval-meta{font-size:13px;color:#bbaeb5}.eval-error{color:#ffab84;min-height:20px;font-size:13px;margin-top:10px}.eval-result{padding:17px;border:1px solid #6d493e;border-radius:13px;background:#2e201e;margin:20px 0}.eval-result strong{color:#ff9a65}.eval-back{border:0;background:transparent;color:#c9bfc5;cursor:pointer;margin:0 0 25px;font-weight:700}.eval-disclaimer{color:#b4a8af;font-size:13px;margin-top:23px}@media(max-width:750px){.eval-grid{grid-template-columns:1fr}.eval-side{display:none}.eval-card{padding:23px}.eval-actions{flex-wrap:wrap}}
 </style><style>
@@ -255,7 +266,7 @@ body.weekly-mode main,body.weekly-mode #evaluacion,body.weekly-mode #rutina{disp
 }
 </style></head><body><header><a class="brand" href="#inicio">Move<span>Smart</span></a><nav><a href="#inicio">Inicio</a><a href="#incluye">Cómo funciona</a><a href="#incluye">Acceso Clientes</a><a href="#incluye">Blog</a><a class="active navpill" href="#inicio">Productos Digitales</a></nav></header><main id="inicio"><div class="crumb">Productos digitales / <strong>Aquiles en Movimiento</strong></div><section class="hero"><div class="hero-copy"><div class="eyebrow">MOVESMART · PROGRAMA DIGITAL</div><div class="line"></div><h1>Aquiles<br><em>en Movimiento</em></h1><p class="lead">Programa autoguiado de 4 semanas para personas con tendinopatía aquílea de porción media previamente diagnosticada.</p><div class="buttons"><button class="cta" onclick="showEvaluation()">Comprar programa →</button><a class="outline" href="#incluye">Conoce qué incluye ↓</a></div></div><div class="hero-art" role="img" aria-label="Primer plano de una pierna y zapatilla deportiva"></div></section><section class="details" id="incluye"><div class="detail"><div class="ico">◉</div><strong>Ejercicios guiados</strong><small>Rutinas con dosis e instrucciones</small></div><div class="detail"><div class="ico">▷</div><strong>Videos explicativos</strong><small>Aprende cada movimiento</small></div><div class="detail"><div class="ico">↗</div><strong>Progresión por niveles</strong><small>Evaluación y ajustes semanales</small></div><div class="detail"><div class="ico">▣</div><strong>Acceso por 28 días</strong><small>Consulta desde tu celular</small></div></section><div class="below"><section class="panel"><h2>¿Para quién es?</h2><p>Este programa está pensado para adultos que cumplan los requisitos de ingreso.</p><ul><li><span class="yes">✓</span><span>Personas con tendinopatía aquílea de porción media diagnosticada por un profesional.</span></li><li><span class="yes">✓</span><span>Quienes cuentan con autorización para realizar ejercicios de fortalecimiento autoguiados.</span></li><li><span class="yes">✓</span><span>Personas que desean seguir un programa estructurado de carga progresiva.</span></li></ul></section><section class="panel"><h2>¿Cuándo no comenzar?</h2><p>La evaluación inicial comprobará algunos criterios antes de habilitar las rutinas.</p><ul><li><span class="no">×</span><span>Si existe sospecha de rotura del tendón o pérdida súbita importante de fuerza.</span></li><li><span class="no">×</span><span>Si presentas dolor agudo reciente no evaluado o síntomas de alarma.</span></li><li><span class="no">×</span><span>Si necesitas una evaluación clínica individual antes de iniciar ejercicios.</span></li></ul></section></div><p class="note">Este programa es una herramienta educativa y de ejercicio autoguiado. No realiza diagnósticos, no sustituye una evaluación profesional y cuatro semanas no implican recuperación completa. Ejemplo de la página comercial: el pago aún no está habilitado.</p><section class="next"><div><h2>Tu recorrido comienza con una evaluación</h2><p>Después de comprar, conocerás tu punto de partida y accederás a tu primera rutina.</p></div><button class="cta" onclick="showEvaluation()">Comenzar →</button></section></main><section id="evaluacion" aria-label="Evaluación inicial de demostración"><button class="eval-back" onclick="showProduct()">← Volver a Aquiles en Movimiento</button><div class="eval-grid"><aside class="eval-side"><div class="chosen">◉ Evaluación inicial</div><div>▷ Mi rutina</div><div>▤ Ejercicios</div><div>↗ Mi progreso</div><div>▣ Recursos</div></aside><div class="eval-card"><div class="eyebrow">MOVESMART · AQUÍLES EN MOVIMIENTO</div><h2 class="eval-heading">Evaluación <span style="color:#ff732e">inicial</span></h2><p class="eval-meta" id="evalCount">Pregunta 1 de 6 · Demostración sin registro</p><div class="eval-meter"><span id="evalBar" style="width:16.67%"></span></div><div id="evalStep"></div><p id="evalError" class="eval-error" aria-live="polite"></p><div id="evalControls" class="eval-actions"><button class="outline" onclick="previousStep()">← Atrás</button><button class="cta" onclick="nextStep()">Continuar →</button></div><p class="eval-disclaimer">Este cuestionario es un prototipo de la experiencia digital. No establece diagnósticos ni determina aptitud médica, y no guarda información. Antes de su publicación requiere validación clínica.</p></div></div></section><section id="rutina" aria-label="Rutina semana uno"><div class="routine-head"><div><div class="routine-tag">MOVESMART · AQUILES EN MOVIMIENTO</div><h2>Mi rutina <span>· Semana 1</span></h2><p style="color:#cdbec6">Tu primera semana de ejercicios guiados</p></div><span class="demo-tag">Vista previa · Sin pago ni registro</span></div><div class="routine-layout"><aside class="routine-side"><button onclick="showProduct()">⌂ &nbsp;Página del producto</button><button onclick="showCurrentEvaluationHistory()">▤ &nbsp;Evaluación semanal</button><button class="chosen">▷ &nbsp;Mi rutina</button><button onclick="showWeekly()">↗ &nbsp;Evaluación semanal</button></aside><div><div class="routine-info"><h3>Objetivo: adaptación a la carga</h3><p>Comenzamos con una selección de ejercicios de la biblioteca MoveSmart. Esta rutina es demostrativa: la dosis, la frecuencia y la selección final requieren validación clínica antes de vender el programa.</p></div><div id="routineSchedule" class="routine-schedule"></div>
 <div class="session-intro"><strong>Sesión completa · Semanas 1</strong><p>Realiza los bloques en orden: movilidad suave, fortalecimiento y, si resulta cómodo, estiramiento opcional. El fortalecimiento es el componente principal.</p></div>
-<div class="routine-exercises" id="routineExercises"></div><div class="routine-controls"><button class="outline" id="pastEvaluationBtn" onclick="showCurrentEvaluationHistory()">← Ver evaluación semanal</button><button class="cta" id="markSessionBtn" onclick="markDemoSession()">Registrar sesión ✓</button><button class="cta" id="weeklyAccessBtn" onclick="showWeekly()" disabled>Ir a evaluación semanal →</button><button class="outline" type="button" onclick="showProblemReport()">Reportar molestia</button><span id="sessionStatus" class="routine-status" aria-live="polite"></span></div><p class="routine-notice">Las sesiones de esta demostración se guardan solo en este navegador; no existe una cuenta de usuario ni se activan cambios automáticos de nivel. Los videos se reproducen desde tu biblioteca de Supabase. Si aparece dolor súbito intenso, pérdida marcada de fuerza u otros síntomas de alarma, no continúes y solicita valoración profesional.</p></div></div></section><section id="weekly" aria-label="Evaluación semanal de demostración">
+<div class="routine-exercises" id="routineExercises"></div><div class="routine-controls"><button class="outline" id="pastEvaluationBtn" onclick="showCurrentEvaluationHistory()">← Ver evaluación semanal</button><button class="cta" id="markSessionBtn" onclick="markDemoSession()">Registrar sesión ✓</button><button class="cta" id="weeklyAccessBtn" onclick="showWeekly()" disabled>Ir a evaluación semanal →</button><span id="sessionStatus" class="routine-status" aria-live="polite"></span></div><p class="routine-notice">Las sesiones de esta demostración se guardan solo en este navegador; no existe una cuenta de usuario ni se activan cambios automáticos de nivel. Los videos se reproducen desde tu biblioteca de Supabase. Si aparece dolor súbito intenso, pérdida marcada de fuerza u otros síntomas de alarma, no continúes y solicita valoración profesional.</p></div></div></section><section id="weekly" aria-label="Evaluación semanal de demostración">
 <button class="eval-back" onclick="showRoutine()">← Volver a mi rutina</button>
 <div class="weekly-layout"><aside class="weekly-aside"><div>✓ Evaluación inicial</div><div>▷ Mi rutina · Semana 1</div><div class="active">↗ Evaluación semanal</div><div>▣ Resultado de la semana</div></aside>
 <div class="weekly-panel"><div class="weekly-subtitle">MOVESMART · AQUILES EN MOVIMIENTO</div><h2>Evaluación <span>semanal</span></h2><p>Has llegado al final de tu primera semana. Cuéntanos cómo respondiste al ejercicio para visualizar una posible adaptación de tu próxima rutina.</p><div class="weekly-progress"><span class="on"></span><span></span><span></span><span></span></div>
@@ -281,7 +292,7 @@ body.weekly-mode main,body.weekly-mode #evaluacion,body.weekly-mode #rutina{disp
   <div class="dash-kicker">MOVESMART · REGISTRO DE SÍNTOMAS</div>
   <h2>¿Qué ocurrió durante o después del ejercicio?</h2>
   <p class="dash-muted">Responde para ver una orientación de demostración para tu próxima sesión. Si tienes síntomas de alarma, no continúes entrenando.</p>
-  <form id="problemForm" onsubmit="submitProblem(event)">
+  <p id="problemLinkContext" class="dash-muted"></p><form id="problemForm" onsubmit="submitProblem(event)">
    <div class="problem-field"><strong>¿Qué dificultad tuviste?</strong>
     <label><input type="radio" name="type" value="molestia" required> Más molestia de lo habitual</label>
     <label><input type="radio" name="type" value="fatiga"> Fatiga o ejercicio demasiado exigente</label>
@@ -289,6 +300,7 @@ body.weekly-mode main,body.weekly-mode #evaluacion,body.weekly-mode #rutina{disp
    </div>
    <div class="problem-field"><strong>¿Cómo estás ahora?</strong>
     <label><input type="radio" name="after" value="resuelta" required> Volví a mi nivel habitual de molestias</label>
+    <label><input type="radio" name="after" value="intermedia"> He mejorado algo, pero todavía tengo más molestias que antes de entrenar</label>
     <label><input type="radio" name="after" value="persistente"> Sigo peor que antes de entrenar</label>
    </div>
    <div class="problem-field"><strong>¿Hay alguna señal de alarma?</strong>
@@ -379,7 +391,7 @@ body.weekly-mode main,body.weekly-mode #evaluacion,body.weekly-mode #rutina{disp
     <div class="dash-progress"><span id="dashProgressBar" style="width:0%"></span></div>
     <div class="dash-row" style="margin-top:18px">
      <button id="dashNextBtn" class="dash-action" onclick="dashboardMainAction()">Abrir mi sesión →</button>
-     <button class="outline" onclick="showProblemReport()">Reportar molestia</button>
+     
     </div>
     <p id="dashSafety" class="dash-muted" style="margin-top:14px"></p>
    </div>
@@ -480,8 +492,8 @@ function renderSchedule(){
  <div class="schedule-days">${['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d=>`<button type="button" ${days.includes(d)?`onclick="selectSessionDay('${d}')"`: 'disabled'} class="schedule-day ${days.includes(d)?'active':''} ${d===selectedSessionDay?'picked':''} ${demoCompleted.has(d)?'done':''}"><span>${d.slice(0,3)}</span><strong>${demoCompleted.has(d)?'✓ LISTA':days.includes(d)?'SESIÓN':'—'}</strong></button>`).join('')}</div>
  <div class="trackbar" role="progressbar" aria-valuenow="${count}" aria-valuemin="0" aria-valuemax="3"><span style="width:${count/3*100}%"></span></div>
  <p class="schedule-help">Días elegidos: ${days.join(', ')}. <strong>Sesión seleccionada: ${selectedSessionDay}</strong>. Las tres sesiones deben registrarse por separado.</p>
- <p class="schedule-help">${count===3?'✓ Tres sesiones registradas. Ya puedes responder la evaluación semanal.':'Al completar tres sesiones se habilitará la evaluación semanal. Si necesitas suspender por molestias, utiliza “Reportar molestia”.'}</p>`;
- const btn=document.getElementById('weeklyAccessBtn'); if(btn){btn.disabled=count!==3;btn.title=count===3?'Evaluar la semana':'Completa las tres sesiones o utiliza Reportar molestia'};
+ <p class="schedule-help">${count===3?'✓ Tres sesiones registradas. Ya puedes responder la evaluación semanal.':'Al completar tres sesiones se habilitará la evaluación semanal. Si presentas molestias, regístralas al finalizar la sesión. Si no puedes continuar, detén el ejercicio y busca orientación profesional.'}</p>`;
+ const btn=document.getElementById('weeklyAccessBtn'); if(btn){btn.disabled=count!==3;btn.title=count===3?'Evaluar la semana':'Completa las tres sesiones; si tienes síntomas preocupantes, no continúes y consulta'};
  const mark=document.getElementById('markSessionBtn');if(mark)mark.textContent=demoCompleted.has(selectedSessionDay)?'✓ Sesión registrada · '+selectedSessionDay:'Registrar sesión · '+selectedSessionDay+' ✓';
 }
 function selectSessionDay(day){selectedSessionDay=day;renderSchedule();document.querySelectorAll('.exercise-check').forEach(x=>x.checked=false);document.getElementById('sessionStatus').textContent='Sesión seleccionada: '+day;}
@@ -713,6 +725,57 @@ window.showCurrentEvaluationHistory=function(){
 };
 const originalShowEvaluation=window.showEvaluation;
 window.showEvaluation=function(){if(state.started){dashboard();return}return originalShowEvaluation()};
+
+// Confirmación de síntomas al cerrar cada sesión: solo demo en almacenamiento local.
+state.sessionSymptoms=state.sessionSymptoms||{};
+const symptomsOverlay=document.createElement('div');
+symptomsOverlay.id='sessionSymptomsOverlay';
+symptomsOverlay.className='ms-symptom-overlay';
+symptomsOverlay.innerHTML=`<section class="ms-symptom-dialog" role="dialog" aria-modal="true" aria-labelledby="symptomsHeading">
+ <div class="dash-kicker">MOVESMART · REGISTRO DE SESIÓN</div>
+ <h2 id="symptomsHeading">Antes de guardar tu sesión…</h2>
+ <p>¿Tuviste alguna molestia durante o después de los ejercicios?</p>
+ <form id="sessionSymptomsForm">
+  <label class="ms-symptom-option"><input type="radio" name="discomfort" value="no" required> No, sin molestias nuevas o relevantes</label>
+  <label class="ms-symptom-option"><input type="radio" name="discomfort" value="si" required> Sí, tuve molestias o dificultad</label>
+  <p class="dash-muted">Si respondes que sí, podrás describirlas y ver una orientación para la próxima sesión.</p>
+  <div class="ms-symptom-actions"><button type="button" class="outline" id="cancelSessionSymptom">Volver a mi sesión</button><button type="submit" class="cta">Guardar sesión →</button></div>
+ </form>
+</section>`;
+document.body.appendChild(symptomsOverlay);
+let sessionSymptomsPending=null;
+function dismissSessionSymptoms(){symptomsOverlay.classList.remove('visible');sessionSymptomsPending=null;}
+document.getElementById('cancelSessionSymptom').addEventListener('click',dismissSessionSymptoms);
+const directSaveSession=window.markDemoSession;
+window.markDemoSession=function(){
+ const status=document.getElementById('sessionStatus');
+ if(state.decisions[state.week]||state.safetyStop){dashboard(true);return;}
+ if(doneList().includes(selectedSessionDay)){status.textContent='Esta sesión ya está registrada.';return;}
+ const required=[...document.querySelectorAll('.exercise-check:not([data-optional])')];
+ if(!required.every(x=>x.checked)){status.textContent='Marca primero movilidad y fortalecimiento. El estiramiento es opcional.';return;}
+ sessionSymptomsPending={week:state.week,day:selectedSessionDay};
+ document.getElementById('sessionSymptomsForm').reset();
+ symptomsOverlay.classList.add('visible');
+};
+document.getElementById('sessionSymptomsForm').addEventListener('submit',function(e){
+ e.preventDefault();
+ if(!sessionSymptomsPending)return;
+ const response=new FormData(this).get('discomfort');
+ if(!response)return;
+ const ctx=sessionSymptomsPending;
+ if(ctx.week!==state.week||ctx.day!==selectedSessionDay){dismissSessionSymptoms();return;}
+ dismissSessionSymptoms();
+ directSaveSession();
+ if(!((state.sessions['w'+ctx.week]||[]).includes(ctx.day)))return;
+ state.sessionSymptoms['w'+ctx.week+'|'+ctx.day]={discomfort:response,registeredAt:new Date().toLocaleString('es-CL')};
+ save();
+ if(response==='si'){
+   showProblemReport();
+   const hint=document.getElementById('problemLinkContext');
+   if(hint)hint.textContent='La sesión de '+ctx.day+' quedó registrada con molestias. Ahora describe qué ocurrió para orientar tu siguiente sesión.';
+ }
+});
+
 window.showDashboard=dashboard;
 window.resetDemoProgram=function(){if(!confirm('¿Reiniciar únicamente los avances de esta demostración?'))return;localStorage.removeItem(KEY);localStorage.removeItem('movesmart_aquiles_v9_sessions');location.reload()};
 
@@ -733,7 +796,7 @@ function submitProblem(event){
  const q=Object.fromEntries(new FormData(event.target).entries());
  const advice={
   alarm:q.alarm==='si',
-  kind:q.alarm==='si'?'consultar':q.after==='persistente'?'pausar':q.type==='tecnica'?'tecnica':q.type==='fatiga'?'reducir':'conservar'
+  kind:q.alarm==='si'?'consultar':q.after==='persistente'?'pausar':q.after==='intermedia'?'precaucion':q.type==='tecnica'?'tecnica':q.type==='fatiga'?'reducir':'conservar'
  };
  let title='',message='';
  if(advice.kind==='consultar'){
@@ -743,6 +806,9 @@ function submitProblem(event){
  }else if(advice.kind==='pausar'){
   title='No progresar: pausa la siguiente sesión';
   message='Como sigues peor que antes, no se habilita una carga mayor. Suspende temporalmente la sesión y solicita valoración si persiste o aumenta el problema. No se ha generado una nueva prescripción.';
+ }else if(advice.kind==='precaucion'){
+  title='Próxima sesión: revisar antes de retomar';
+  message='Aunque las molestias disminuyeron, todavía estás por encima de tu nivel habitual. No aumentes la carga. En la próxima sesión revisa nuevamente cómo estás antes de empezar; si sigues peor, posterga el fortalecimiento y consulta si persiste o empeora. El sistema no considera esto una autorización para progresar.';
  }else if(advice.kind==='tecnica'){
   title='Próxima sesión: revisar ejecución';
   message='Mantén el nivel sin progresar. Vuelve a revisar los videos y utiliza solo variantes que puedas hacer de forma controlada; si no puedes, no completes ese ejercicio y consulta.';
@@ -775,11 +841,36 @@ dashboard=function(skipFinal=false){
   slot.style.display='block';slot.innerHTML='<strong>Reporte registrado · '+p.title+'</strong><p>'+p.message+'</p>';
  }else slot.style.display='none';
 };
+window.openNextSessionCheckin=function(){
+ const el=document.getElementById('nextSessionCheckin');
+ el.classList.add('visible');
+ document.getElementById('nextSessionCheckinForm').reset();
+};
+window.resolveNextSessionCheckin=function(e){
+ e.preventDefault();
+ const v=new FormData(e.target).get('status');
+ const p=state.pendingAdjustment;
+ if(!p)return;
+ document.getElementById('nextSessionCheckin').classList.remove('visible');
+ if(v==='habitual'){
+   p.cleared=true;
+   p.message='Has vuelto a tu estado habitual. Para la siguiente sesión, conserva el nivel previo y no aumentes la carga por este reporte.';
+   save();
+   openCurrentSession();
+ }else{
+   p.kind='pausar';p.title='Próxima sesión pospuesta';
+   p.message='Sigues con más molestias que antes. No se habilita la siguiente sesión de fuerza; consulta si persisten, aumentan o limitan la actividad.';
+   save();dashboard(true);
+ }
+};
 const _oldOpenCurrentSession=openCurrentSession;
 openCurrentSession=function(){
  const p=state.pendingAdjustment;
  if(p?.week===state.week && ['pausar','consultar'].includes(p.kind)){
   dashboard(true);return;
+ }
+ if(p?.week===state.week && p.kind==='precaucion' && !p.cleared){
+  window.openNextSessionCheckin();return;
  }
  _oldOpenCurrentSession();
  const existing=document.getElementById('sessionProblemAdvice');
@@ -836,4 +927,15 @@ function renderFinalDemo(e){e.preventDefault();let v=Object.fromEntries(new Form
 </script>
 
 
-</body></html>
+<div id="nextSessionCheckin" class="ms-symptom-overlay" aria-live="polite">
+<section class="ms-symptom-dialog" role="dialog" aria-modal="true" aria-labelledby="nextCheckinTitle">
+ <div class="dash-kicker">MOVESMART · ANTES DE LA PRÓXIMA SESIÓN</div>
+ <h2 id="nextCheckinTitle">¿Cómo evolucionaron tus molestias?</h2>
+ <p>En la sesión anterior todavía tenías más molestias que de costumbre. Verifiquemos la respuesta antes de continuar.</p>
+ <form id="nextSessionCheckinForm" onsubmit="resolveNextSessionCheckin(event)">
+  <label class="ms-symptom-option"><input type="radio" name="status" value="habitual" required> Volví a mi nivel habitual, sin nuevas señales de alarma</label>
+  <label class="ms-symptom-option"><input type="radio" name="status" value="peor" required> Todavía tengo más molestias o apareció un síntoma preocupante</label>
+  <p class="dash-muted">Si hubo un chasquido, pérdida importante de fuerza, dolor súbito intenso u otra señal de alarma, detén el ejercicio y solicita atención profesional.</p>
+  <div class="ms-symptom-actions"><button type="button" class="outline" onclick="document.getElementById('nextSessionCheckin').classList.remove('visible');showDashboard(true)">Volver</button><button type="submit" class="cta">Continuar →</button></div>
+ </form>
+</section></div></body></html>
