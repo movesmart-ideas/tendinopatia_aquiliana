@@ -216,6 +216,7 @@ body.problem-mode .report-content-wrap>.dash-card{margin:0 auto 22px!important;w
 .ms-symptom-option input{accent-color:#ff7934;width:19px;height:19px;flex-shrink:0}
 .ms-symptom-actions{display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px}
 @media(max-width:520px){.ms-symptom-actions>*{width:100%}}
+
 </style><style>
 #evaluacion{display:none;max-width:1030px;margin:auto;padding:48px 22px 90px}body.eval-mode main{display:none}body.eval-mode #evaluacion{display:block}.eval-grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px}.eval-side{background:#171217;border:1px solid #41313a;border-radius:18px;padding:26px;height:fit-content}.eval-side div{padding:13px 8px;color:#a9a0a7;border-bottom:1px solid #392c32}.eval-side .chosen{color:#ff732e;font-weight:800}.eval-card{border:1px solid #604032;background:linear-gradient(150deg,#22151a,#100d10);padding:34px;border-radius:23px;min-height:450px}.eval-heading{font-size:clamp(30px,4.7vw,44px);line-height:1.1;margin:10px 0}.eval-meter{height:7px;background:#34292e;border-radius:10px;overflow:hidden;margin:26px 0}.eval-meter span{display:block;height:100%;background:#ff732e;transition:width .2s}.eval-question{font-size:21px;font-weight:750;margin:26px 0 15px}.eval-options{display:grid;gap:12px}.eval-options label{display:flex;gap:12px;align-items:center;border:1px solid #504049;border-radius:11px;padding:14px 15px;cursor:pointer}.eval-options label:has(input:checked){border-color:#ff732e;background:#462719}.eval-options input{accent-color:#ff732e}.eval-actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.eval-meta{font-size:13px;color:#bbaeb5}.eval-error{color:#ffab84;min-height:20px;font-size:13px;margin-top:10px}.eval-result{padding:17px;border:1px solid #6d493e;border-radius:13px;background:#2e201e;margin:20px 0}.eval-result strong{color:#ff9a65}.eval-back{border:0;background:transparent;color:#c9bfc5;cursor:pointer;margin:0 0 25px;font-weight:700}.eval-disclaimer{color:#b4a8af;font-size:13px;margin-top:23px}@media(max-width:750px){.eval-grid{grid-template-columns:1fr}.eval-side{display:none}.eval-card{padding:23px}.eval-actions{flex-wrap:wrap}}
 </style><style>
@@ -294,13 +295,13 @@ body.weekly-mode main,body.weekly-mode #evaluacion,body.weekly-mode #rutina{disp
   <p class="dash-muted">Responde para ver una orientación de demostración para tu próxima sesión. Si tienes síntomas de alarma, no continúes entrenando.</p>
   <p id="problemLinkContext" class="dash-muted"></p><form id="problemForm" onsubmit="submitProblem(event)">
    <div class="problem-field"><strong>¿Qué dificultad tuviste?</strong>
-    <label><input type="radio" name="type" value="molestia" required> Más molestia de lo habitual</label>
+    <label><input type="radio" name="type" value="molestia" required> Aumentaron las molestias</label>
     <label><input type="radio" name="type" value="fatiga"> Fatiga o ejercicio demasiado exigente</label>
     <label><input type="radio" name="type" value="tecnica"> No pude realizar correctamente un ejercicio</label>
    </div>
    <div class="problem-field"><strong>¿Cómo estás ahora?</strong>
-    <label><input type="radio" name="after" value="resuelta" required> Volví a mi nivel habitual de molestias</label>
-    <label><input type="radio" name="after" value="intermedia"> He mejorado algo, pero todavía tengo más molestias que antes de entrenar</label>
+    <label><input type="radio" name="after" value="resuelta" required> Las molestias volvieron a ser como antes de entrenar</label>
+    <label><input type="radio" name="after" value="intermedia"> Mejoré parcialmente, pero todavía tengo molestias</label>
     <label><input type="radio" name="after" value="persistente"> Sigo peor que antes de entrenar</label>
    </div>
    <div class="problem-field"><strong>¿Hay alguna señal de alarma?</strong>
@@ -558,6 +559,9 @@ let state;
 try{state=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 state=state||{started:false,week:1,levels:{1:'inicial'},days:'LXV',sessions:{},decisions:{},sessionDates:{},safetyStop:false};
 state.evaluations=state.evaluations||{};
+state.sessionModes=state.sessionModes||{};
+state.adaptStreak=Number(state.adaptStreak)||0;
+state.activeSessionMode=state.activeSessionMode||'normal';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 function wkKey(){return 'w'+state.week}
 function days(){return dayChoices[state.days]||dayChoices.LXV}
@@ -584,7 +588,7 @@ return '<div class="dash-history" style="margin:9px 0"><div><strong>Semana '+w+'
 (ended?'<div style="margin-top:7px"><button class="outline" type="button" onclick="showWeekEvaluationHistory('+w+')">Ver evaluación semanal '+w+' →</button></div>':'')+'</div></div>'
 }).join('');
  const all=Object.keys(state.sessionDates).sort();
- document.getElementById('dashHistory').innerHTML=all.length?all.map(k=>'<div>✓ '+k.replace('w','Semana ').replace('|',' · ')+' <small style="color:#bbaab1">'+state.sessionDates[k]+'</small></div>').join(''):'<p class="dash-muted">Aún no hay sesiones registradas.</p>';
+ document.getElementById('dashHistory').innerHTML=all.length?all.map(k=>'<div>✓ '+k.replace('w','Semana ').replace('|',' · ')+' <small style="color:#bbaab1">'+state.sessionDates[k]+'</small> · '+(state.sessionModes?.[k]==='adaptada'?'Sesión adaptada':'Sesión habitual')+'</div>').join(''):'<p class="dash-muted">Aún no hay sesiones registradas.</p>';
  window.scrollTo(0,0);
 }
 window.dashboardMainAction=function(){if(state.safetyStop)return;if(ready()){showWeekly();return}openCurrentSession()};
@@ -624,12 +628,25 @@ function renderingExercises(){
  if(state.week===3)return [unilateral,seated,bilateral];
  return [bilateral,seated,unilateralLoaded];
 }
+// Variantes ilustrativas revisables: un cambio se aplica sobre la rutina realmente asignada.
+function adaptExerciseV30(x){
+ const name=x.title.toLowerCase();
+ const base={...x,tip:'Sesión adaptada a tu evolución. Realiza el movimiento de forma controlada y detente si las molestias aumentan o tienes dificultad para continuar. '+x.tip};
+ if(name.includes('unilateral') && name.includes('carga'))return {...base,title:'Elevación unilateral asistida (alternativa a unilateral con carga)',file:'tren_inferior/elevacion_unilateral_asistida.mp4',dose:'Sesión adaptada: 2 × 8, sin peso, con apoyo; usar bilateral si no se tolera'};
+ if(name.includes('unilateral'))return {...base,title:'Elevación unilateral con mayor apoyo',file:'tren_inferior/elevacion_unilateral_asistida.mp4',dose:'Sesión adaptada: 2 × 8 con apoyo estable; cambiar a bilateral si es necesario'};
+ if(name.includes('isométric') || name.includes('isometric'))return {...base,dose:'Sesión adaptada: 2 × 15–20 segundos, esfuerzo moderado'};
+ if(name.includes('sentado con carga'))return {...base,title:'Elevación sentado con carga reducida',file:'tren_inferior/Elevacion_sentado con_carga.mp4',dose:'Sesión adaptada: 2 × 8–10, retirar o reducir la carga externa'};
+ if(name.includes('bilateral') || name.includes('elevación de talones'))return {...base,title:'Elevación de talones bilateral sin carga externa',file:'tren_inferior/elevacion_talones.mp4',dose:'Sesión adaptada: 2 × 8, suelo plano, sin peso adicional'};
+ if(name.includes('flexión plantar sentado'))return {...base,dose:'Sesión adaptada: 2 × 10, sin resistencia adicional'};
+ return {...base,dose:'Sesión adaptada: reducir el volumen respecto de la sesión habitual; validar dosis'};
+}
 function renderRoutineV6(){
- const blocks=[{name:'01 · MOVILIDAD',sub:'Preparación suave (orientativa)',items:extraExercises.movilidad},
- {name:'02 · FORTALECIMIENTO',sub:state.week===1?'Primera semana · dosis ilustrativas':'Semana '+state.week+' · progresión por validar',items:renderingExercises()},
+ const isAdapted=state.activeSessionMode==='adaptada';
+ const blocks=[{name:'01 · MOVILIDAD',sub:'Preparación suave (orientativa)',items:isAdapted?extraExercises.movilidad.map(x=>({...x,dose:'Sesión adaptada: 1 × 8–10 movimientos suaves; sin forzar'})):extraExercises.movilidad},
+ {name:'02 · FORTALECIMIENTO',sub:isAdapted?'SESIÓN ADAPTADA · descansos 90–120 s':state.week===1?'Primera semana · dosis ilustrativas':'Semana '+state.week+' · progresión por validar',items:isAdapted?renderingExercises().map(adaptExerciseV30):renderingExercises()},
  {name:'03 · VUELTA A LA CALMA',sub:'Estiramiento opcional, no obligatorio',items:extraExercises.estiramientos}];
  let i=0;document.getElementById('routineExercises').innerHTML=blocks.map(b=>'<div class="session-block"><div class="session-block-header"><h3>'+b.name+'</h3><p>'+b.sub+'</p></div><div class="session-cards">'+b.items.map(x=>{const idx=i++;return '<article class="routine-card"><div class="exercise-player" id="player-'+idx+'">'+(x.file?'<video class="exercise-main-video" preload="metadata" playsinline muted src="'+videoBase+x.file+'#t=0.5" aria-label="Video: '+x.title+'"></video><div class="player-shade"></div><span class="player-label">VIDEO · '+(idx+1)+'</span><button class="player-start" type="button" onclick="startExerciseVideo('+idx+')"><span class="play-icon">▶</span><span>Ver video</span></button>':'<div class="dash-placeholder" style="margin:20px">🎬 Video no disponible</div>')+'</div><h3>'+x.title+'</h3><div class="routine-meta">'+x.dose+'</div><div class="routine-guide">'+x.tip+'</div><label class="routine-check"><input type="checkbox" class="exercise-check" '+(b.name.startsWith('03')?'data-optional="1"':'')+'> '+(b.name.startsWith('03')?'Opcional · lo revisé':'Lo revisé en esta sesión')+'</label></article>'}).join('')+'</div></div>').join('');
- document.getElementById('sessionStatus').textContent=state.week>1?'Demostración del flujo. Las cargas de esta semana requieren revisión clínica.':'';
+ document.getElementById('sessionStatus').textContent=isAdapted?'Sesión adaptada a tu evolución. Detén los ejercicios si aumentan las molestias o se dificulta el movimiento.':state.week>1?'Demostración del flujo. Las cargas de esta semana requieren revisión clínica.':'';
 }
 window.markDemoSession=function(){
  if(state.decisions[state.week]||state.safetyStop){dashboard();return;}
@@ -656,6 +673,12 @@ function decidirRutaDemo(v){
 
 window.evaluateWeekly=function(e){e.preventDefault();if(state.decisions[state.week]){dashboard();return;}const x=Object.fromEntries(new FormData(document.getElementById('weeklyForm')).entries());
  let code=decidirRutaDemo(x);
+ const pending=state.pendingAdjustment;
+ if(pending?.week===state.week && !pending.cleared && pending.kind==='precaucion' && (code==='progresar'||code==='parcial'))code='mantener';
+ if(pending?.week===state.week && pending.kind==='pausar' && (code==='progresar'||code==='parcial'))code='adaptar';
+ const modes=days().map(d=>state.sessionModes['w'+state.week+'|'+d]);
+ if(modes.some(m=>m==='adaptada') && (code==='progresar'||code==='parcial'))code='mantener';
+ if(state.adaptStreak>=2 && pending && !pending.cleared && (code==='progresar'||code==='parcial'))code='mantener';
  const completedWeek=state.week;
  state.decisions[completedWeek]=code;
  state.evaluations[completedWeek]={...x,result:code,recordedAt:new Date().toLocaleString('es-CL')};
@@ -667,7 +690,7 @@ window.evaluateWeekly=function(e){e.preventDefault();if(state.decisions[state.we
   return;
  }
  const title=code==='detener'?'Detener y solicitar valoración':code==='progresar'?'Progresión completa de demostración':code==='parcial'?'Progresión parcial de demostración':code==='adaptar'?'Ruta de adaptación de demostración':'Ruta de mantenimiento de demostración';
- document.getElementById('weeklyForm').style.display='none';document.getElementById('weeklyResult').innerHTML='<div class="weekly-result"><div class="weekly-subtitle">RESULTADO ILUSTRATIVO</div><h3>'+title+'</h3><p>Las reglas son de prueba y no constituyen una prescripción clínica. '+(code==='detener'?'Se pausa el programa.':'La semana anterior quedó cerrada y la siguiente es la activa del prototipo.')+'</p><button class="cta" type="button" onclick="showDashboard()">Ir a Mi programa →</button></div>';
+ document.getElementById('weeklyForm').style.display='none';document.getElementById('weeklyResult').innerHTML='<div class="weekly-result"><div class="weekly-subtitle">RESULTADO ILUSTRATIVO</div><h3>'+title+'</h3><p>Este programa es autoguiado y no incluye supervisión individual en tiempo real. '+(code==='detener'?'Se pausa el programa.':'La semana anterior quedó cerrada y la siguiente es la activa del prototipo.')+'</p><button class="cta" type="button" onclick="showDashboard()">Ir a Mi programa →</button></div>';
  document.getElementById('weeklyResult').scrollIntoView({behavior:'smooth',block:'nearest'});
 };
 
@@ -767,7 +790,17 @@ document.getElementById('sessionSymptomsForm').addEventListener('submit',functio
  dismissSessionSymptoms();
  directSaveSession();
  if(!((state.sessions['w'+ctx.week]||[]).includes(ctx.day)))return;
- state.sessionSymptoms['w'+ctx.week+'|'+ctx.day]={discomfort:response,registeredAt:new Date().toLocaleString('es-CL')};
+ const sessionKey='w'+ctx.week+'|'+ctx.day;
+ const mode=state.activeSessionMode==='adaptada'?'adaptada':'habitual';
+ state.sessionModes[sessionKey]=mode;
+ state.adaptStreak=mode==='adaptada'?state.adaptStreak+1:0;
+ state.activeSessionMode='normal';
+ state.sessionSymptoms[sessionKey]={discomfort:response,mode,registeredAt:new Date().toLocaleString('es-CL')};
+ if(response==='no' && state.pendingAdjustment?.week===ctx.week && state.pendingAdjustment.kind==='precaucion'){
+  state.pendingAdjustment.cleared=true;
+  state.pendingAdjustment.title='Sin nuevas molestias registradas';
+  state.pendingAdjustment.message='La sesión quedó registrada sin molestias nuevas; comprobar tolerancia antes de progresar.';
+ }
  save();
  if(response==='si'){
    showProblemReport();
@@ -805,10 +838,10 @@ function submitProblem(event){
   state.safetyStop=true;
  }else if(advice.kind==='pausar'){
   title='No progresar: pausa la siguiente sesión';
-  message='Como sigues peor que antes, no se habilita una carga mayor. Suspende temporalmente la sesión y solicita valoración si persiste o aumenta el problema. No se ha generado una nueva prescripción.';
+  message='Como sigues peor que antes, no se habilita una carga mayor. Suspende temporalmente la sesión y solicita valoración si persiste o aumenta el problema. Antes de retomar, revisa cómo evolucionan tus síntomas.';
  }else if(advice.kind==='precaucion'){
   title='Próxima sesión: revisar antes de retomar';
-  message='Aunque las molestias disminuyeron, todavía estás por encima de tu nivel habitual. No aumentes la carga. En la próxima sesión revisa nuevamente cómo estás antes de empezar; si sigues peor, posterga el fortalecimiento y consulta si persiste o empeora. El sistema no considera esto una autorización para progresar.';
+  message='Aunque las molestias disminuyeron, todavía tienes molestias. No aumentes la carga. En la próxima sesión revisa nuevamente cómo estás antes de empezar; si sigues peor, posterga el fortalecimiento y consulta si persiste o empeora. El sistema no considera esto una autorización para progresar.';
  }else if(advice.kind==='tecnica'){
   title='Próxima sesión: revisar ejecución';
   message='Mantén el nivel sin progresar. Vuelve a revisar los videos y utiliza solo variantes que puedas hacer de forma controlada; si no puedes, no completes ese ejercicio y consulta.';
@@ -817,11 +850,11 @@ function submitProblem(event){
   message='No aumentaremos la carga. En esta demostración se señala una opción de reducir series y mantener una variante cómoda, sin fijar una dosis clínica universal.';
  }else{
   title='Próxima sesión: conservar el nivel';
-  message='Como regresaste a tu estado habitual, la demostración mantiene los ejercicios del nivel actual. Registra tu respuesta nuevamente después de la siguiente sesión.';
+  message='Como las molestias volvieron a ser como antes de entrenar, la demostración mantiene los ejercicios del nivel actual. Registra tu respuesta nuevamente después de la siguiente sesión.';
  }
  const report={week:state.week,fromDay:typeof selectedSessionDay==='string'?selectedSessionDay:null,nextDay:nextDay()||days()[0],kind:advice.kind,questions:q,title,message,date:new Date().toLocaleString('es-CL')};
  state.problemReports.push(report);
- state.pendingAdjustment=advice.kind==='consultar'?null:report;
+ state.pendingAdjustment=advice.kind==='consultar'?null:report;state.activeSessionMode='normal';
  save();
  document.getElementById('problemForm').style.display='none';
  document.getElementById('problemResult').innerHTML='<div class="problem-advice '+(advice.kind==='consultar'||advice.kind==='pausar'?'warning':'')+'"><h3>'+title+'</h3><p>'+message+'</p><p class="dash-muted">Se mostrará esta orientación al volver a tu programa y antes de la próxima sesión. Es una demostración; requiere validación clínica.</p><button type="button" class="cta" onclick="showDashboard(true)">Volver a Mi programa →</button></div>';
@@ -845,21 +878,52 @@ window.openNextSessionCheckin=function(){
  const el=document.getElementById('nextSessionCheckin');
  el.classList.add('visible');
  document.getElementById('nextSessionCheckinForm').reset();
+ syncFunctionConfirmation();
+};
+window.syncFunctionConfirmation=function(){
+ const form=document.getElementById('nextSessionCheckinForm');
+ if(!form)return;
+ const status=new FormData(form).get('status');
+ const cb=form.querySelector('[name="function_ok"]');
+ const needed=status==='habitual'||status==='disminuye';
+ cb.required=needed;
+ cb.setCustomValidity('');
+ const note=document.getElementById('functionRequiredHint');
+ if(note)note.style.display=needed?'block':'none';
 };
 window.resolveNextSessionCheckin=function(e){
  e.preventDefault();
  const v=new FormData(e.target).get('status');
+ const confirmation=e.target.querySelector('[name="function_ok"]');
+ if((v==='habitual'||v==='disminuye')&&!confirmation.checked){
+   confirmation.required=true;
+   confirmation.reportValidity();
+   return;
+ }
  const p=state.pendingAdjustment;
  if(!p)return;
  document.getElementById('nextSessionCheckin').classList.remove('visible');
+ p.checkin=v;
+ p.checkedAt=new Date().toISOString();
  if(v==='habitual'){
-   p.cleared=true;
-   p.message='Has vuelto a tu estado habitual. Para la siguiente sesión, conserva el nivel previo y no aumentes la carga por este reporte.';
-   save();
-   openCurrentSession();
+   p.cleared=true;p.kind='conservar';
+   p.title='Molestias recuperadas';
+   p.message='Confirmaste que las molestias volvieron a ser como antes de entrenar. Puedes revisar tu rutina sin subir automáticamente la carga.';state.activeSessionMode='normal';
+   save();openCurrentSession();
+ }else if(v==='disminuye'){
+   if(new FormData(e.target).get('function_ok')!=='si'){
+     p.kind='pausar';p.title='Función no confirmada';p.message='No se habilita una sesión adaptada sin confirmar que la función está conservada. Solicita valoración si hay deterioro.';save();dashboard(true);return;
+   }
+   p.cleared=false;p.kind='precaucion';
+   p.title='Mejoría parcial: revisar antes de entrenar';
+   p.message='Todavía tienes molestias. Si conservas tu función y no hay señales de alarma, se podrá ofrecer una sesión adaptada (dosis orientativas).';
+   if(state.adaptStreak>=2){p.kind='pausar';p.title='Dos sesiones adaptadas consecutivas';p.message='No se ofrece una tercera adaptación automática. Solicita evaluación profesional antes de continuar.';save();dashboard(true);return;}
+   save();openCurrentSession();
  }else{
-   p.kind='pausar';p.title='Próxima sesión pospuesta';
-   p.message='Sigues con más molestias que antes. No se habilita la siguiente sesión de fuerza; consulta si persisten, aumentan o limitan la actividad.';
+   p.cleared=false;p.kind='pausar';
+   p.title=v==='alarma'?'Detener y solicitar valoración':'Empeoramiento persistente: posponer fuerza';
+   p.message=v==='alarma'?'Hay una posible señal de alarma. No continúes entrenando y solicita valoración médica.':'El estado sigue empeorando o la función disminuyó. Posponemos la carga de fuerza prevista y recomendamos valoración profesional.';
+   if(v==='alarma')state.safetyStop=true;
    save();dashboard(true);
  }
 };
@@ -869,9 +933,11 @@ openCurrentSession=function(){
  if(p?.week===state.week && ['pausar','consultar'].includes(p.kind)){
   dashboard(true);return;
  }
- if(p?.week===state.week && p.kind==='precaucion' && !p.cleared){
+ if(p?.week===state.week && p.kind==='precaucion' && !p.cleared && p.checkin!=='disminuye'){
   window.openNextSessionCheckin();return;
  }
+ state.activeSessionMode=(p?.week===state.week && p.kind==='precaucion' && !p.cleared && p.checkin==='disminuye')?'adaptada':'normal';
+ if(state.activeSessionMode==='adaptada' && state.adaptStreak>=2){p.kind='pausar';p.title='Límite de dos adaptaciones consecutivas';p.message='No se ofrece una tercera sesión adaptada automáticamente. Solicita valoración profesional.';save();dashboard(true);return;}
  _oldOpenCurrentSession();
  const existing=document.getElementById('sessionProblemAdvice');
  existing?.remove();
@@ -888,7 +954,7 @@ window.markDemoSession=function(){
  const previous=count();
  _oldMarkDemoSession();
  if(count()>previous && state.pendingAdjustment?.week===state.week){
-  state.pendingAdjustment=null;save();
+  state.pendingAdjustment.sessionRecordedAfterReport=true;save();
  }
 };
 
@@ -931,10 +997,14 @@ function renderFinalDemo(e){e.preventDefault();let v=Object.fromEntries(new Form
 <section class="ms-symptom-dialog" role="dialog" aria-modal="true" aria-labelledby="nextCheckinTitle">
  <div class="dash-kicker">MOVESMART · ANTES DE LA PRÓXIMA SESIÓN</div>
  <h2 id="nextCheckinTitle">¿Cómo evolucionaron tus molestias?</h2>
- <p>En la sesión anterior todavía tenías más molestias que de costumbre. Verifiquemos la respuesta antes de continuar.</p>
+ <p>En la sesión anterior reportaste molestias que aún no se habían resuelto. Verifiquemos la respuesta antes de continuar.</p>
  <form id="nextSessionCheckinForm" onsubmit="resolveNextSessionCheckin(event)">
-  <label class="ms-symptom-option"><input type="radio" name="status" value="habitual" required> Volví a mi nivel habitual, sin nuevas señales de alarma</label>
-  <label class="ms-symptom-option"><input type="radio" name="status" value="peor" required> Todavía tengo más molestias o apareció un síntoma preocupante</label>
+  <label class="ms-symptom-option"><input type="radio" name="status" value="habitual" required onchange="syncFunctionConfirmation()"> Las molestias volvieron a ser como antes de entrenar y no tengo señales de alarma</label>
+  <label class="ms-symptom-option"><input type="radio" name="status" value="disminuye" required onchange="syncFunctionConfirmation()"> Disminuyeron, pero todavía tengo molestias</label>
+  <label class="ms-symptom-option"><input type="radio" name="status" value="peor" required onchange="syncFunctionConfirmation()"> Las molestias aumentaron, no mejoran o ahora me cuesta más caminar</label>
+  <label class="ms-symptom-option"><input type="radio" name="status" value="alarma" required onchange="syncFunctionConfirmation()"> Tengo síntomas nuevos de alarma</label>
+  <label class="ms-symptom-option"><input type="checkbox" name="function_ok" value="si"> <strong>Confirmo que puedo caminar y hacer mis actividades cotidianas sin que hayan empeorado de forma importante.</strong> <span style="color:#ffab7a">(Obligatorio para continuar entrenando)</span></label>
+  <p id="functionRequiredHint" class="dash-muted" style="display:none;color:#ffab7a">Para continuar con una sesión habitual o adaptada, debes marcar la confirmación. Si no puedes caminar o tus actividades empeoraron, selecciona la opción de empeoramiento para recibir orientación; no debes confirmar algo que no sea cierto.</p>
   <p class="dash-muted">Si hubo un chasquido, pérdida importante de fuerza, dolor súbito intenso u otra señal de alarma, detén el ejercicio y solicita atención profesional.</p>
   <div class="ms-symptom-actions"><button type="button" class="outline" onclick="document.getElementById('nextSessionCheckin').classList.remove('visible');showDashboard(true)">Volver</button><button type="submit" class="cta">Continuar →</button></div>
  </form>
